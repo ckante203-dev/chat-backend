@@ -60,6 +60,7 @@ app.post('/api/auth/register', async (req, res) => {
 // =========================
 app.post('/api/auth/login', async (req, res) => {
   const { email, motDePasse } = req.body;
+  console.log('LOGIN REQUÊTE RECUE :', req.body); // <== log
 
   if (!email || !motDePasse) {
     return res.status(400).json({ message: 'Email ou mot de passe manquant' });
@@ -70,6 +71,7 @@ app.post('/api/auth/login', async (req, res) => {
       'SELECT id, email, mot_de_passe FROM utilisateurs WHERE email = $1',
       [email]
     );
+    console.log('RESULT QUERY:', result.rows); // <== log
 
     if (result.rows.length === 0) {
       return res.status(400).json({ message: 'Utilisateur non trouvé' });
@@ -90,10 +92,11 @@ app.post('/api/auth/login', async (req, res) => {
       },
     });
   } catch (err) {
-    console.error('LOGIN ERROR:', err);
+    console.error('LOGIN ERROR:', err); // <== log détaillé
     res.status(500).json({ message: 'Erreur serveur' });
   }
 });
+
 
 // =========================
 // LISTE UTILISATEURS
@@ -240,6 +243,8 @@ app.put('/api/conversations/:id/lus/:userId', async (req, res) => {
 // =========================
 // LANCEMENT SERVEUR
 // =========================
-app.listen(3000, '0.0.0.0', () => {
-  console.log('🚀 Serveur lancé sur http://0.0.0.0:3000');
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Serveur lancé sur le port ${PORT}`);
 });
